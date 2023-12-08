@@ -1,6 +1,8 @@
 package com.stackroute.test.service;
 
 import com.stackroute.domain.Blog;
+import com.stackroute.exception.BlogAlreadyExistsException;
+import com.stackroute.exception.BlogNotFoundException;
 import com.stackroute.repository.BlogRepository;
 import com.stackroute.service.BlogServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -71,7 +73,7 @@ class BlogServiceTest {
     public void givenBlogIdThenShouldReturnRespectiveBlog() throws BlogNotFoundException {
         when(blogRepository.findById(anyInt())).thenReturn(Optional.of(blog));
         Blog retrievedBlog = blogService.getBlogById(blog.getBlogId());
-        verify(blogRepository, times(2)).findById(anyInt());
+        verify(blogRepository, times(1)).findById(anyInt());
 
     }
 
@@ -90,7 +92,7 @@ class BlogServiceTest {
         when(blogRepository.findById(blog.getBlogId())).thenThrow(BlogNotFoundException.class);
         Assertions.assertThrows(BlogNotFoundException.class, () ->
                 blogService.deleteBlog(1));
-        verify(blogRepository, times(1)).findById(blog.getBlogId());
+        verify(blogRepository, times(2)).findById(blog.getBlogId());
     }
 
     @Test

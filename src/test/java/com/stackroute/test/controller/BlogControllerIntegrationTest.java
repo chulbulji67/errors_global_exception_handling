@@ -1,6 +1,8 @@
 package com.stackroute.test.controller;
 
 import com.stackroute.domain.Blog;
+import com.stackroute.exception.BlogAlreadyExistsException;
+import com.stackroute.exception.BlogNotFoundException;
 import com.stackroute.service.BlogService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
