@@ -83,7 +83,7 @@ class BlogServiceTest {
         Blog deletedBlog = blogService.deleteBlog(1);
         assertEquals(1, deletedBlog.getBlogId());
 
-        verify(blogRepository, times(2)).findById(blog.getBlogId());
+        verify(blogRepository, times(1)).findById(blog.getBlogId());
         verify(blogRepository, times(1)).deleteById(blog.getBlogId());
     }
 
@@ -92,18 +92,18 @@ class BlogServiceTest {
         when(blogRepository.findById(blog.getBlogId())).thenThrow(BlogNotFoundException.class);
         Assertions.assertThrows(BlogNotFoundException.class, () ->
                 blogService.deleteBlog(1));
-        verify(blogRepository, times(2)).findById(blog.getBlogId());
+        verify(blogRepository, times(1)).findById(blog.getBlogId());
     }
 
     @Test
     public void givenBlogToUpdateThenShouldReturnUpdatedBlog() throws BlogNotFoundException {
-        when(blogRepository.existsById(blog.getBlogId())).thenReturn(true);
-        when(blogRepository.save(blog)).thenReturn(blog);
-        blog.setBlogContent("SampleBlogforTesting");
-        Blog blog1 = blogService.updateBlog(blog);
-        assertEquals(blog1.getBlogContent(), "SampleBlogforTesting");
-        verify(blogRepository, times(1)).save(blog);
-        verify(blogRepository, times(1)).existsById(blog.getBlogId());
+            when(blogRepository.existsById(blog.getBlogId())).thenReturn(true);
+            when(blogRepository.save(blog)).thenReturn(blog);
+            blog.setBlogContent("SampleBlogforTesting");
+            Blog blog1 = blogService.updateBlog(blog);
+            assertEquals(blog1.getBlogContent(), "SampleBlogforTesting");
+            verify(blogRepository, times(1)).save(blog);
+            verify(blogRepository, times(1)).existsById(blog.getBlogId());
     }
 
     @Test

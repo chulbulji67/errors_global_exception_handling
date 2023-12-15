@@ -21,14 +21,16 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     public Blog saveBlog(Blog blog) {
-        if (blogRepository.existsById(blog.getBlogId())) {
-            throw new BlogAlreadyExistsException("Blog with ID " + blog.getBlogId() + " already exists");
+        Optional<Blog> optionalBlog = blogRepository.findById(blog.getBlogId());
+
+        if (optionalBlog.isPresent()) {
+            throw new BlogAlreadyExistsException();
+
+        } else {
+
+            return blogRepository.save(blog);
         }
 
-        // Save the blog
-        return blogRepository.save(blog);
-//        return blogRepository.save(blog);
-//        return null;
     }
 
     @Override
@@ -56,25 +58,31 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     public Blog deleteBlog(int id) {
-        if (!blogRepository.existsById(id)) {
+        Optional<Blog> optionalBlog = blogRepository.findById(id);
+        if (optionalBlog == null) {
             throw new BlogNotFoundException("Blog with ID " + id + " not found");
         }
 
-        blogRepository.findById(id);
-        Blog blog1 = blogRepository.findById(id).get();
+
+        Blog blog = optionalBlog.get();
         // Delete the blog
         blogRepository.deleteById(id);
-        return blog1;
+        return blog;
     }
 
     @Override
     public Blog updateBlog(Blog blog) {
-        if (!blogRepository.existsById(blog.getBlogId())) {
-            throw new BlogNotFoundException("Blog with ID " + blog.getBlogId() + " not found");
+        if (blogRepository.existsById(blog.getBlogId())){
+            Blog existingBlog = blogRepository.findById(blog.getBlogId()).get();
+            existingBlog.setBlogContent(blog.getBlogContent());
+            existingBlog.setBlogTitle(blog.getBlogTitle());
+            existingBlog.setBlogId(blog.getBlogId());
+            existingBlog.setAuthorName(blog.getAuthorName());
+            return blogRepository.save(existingBlog);
         }
-
-        // Update the blog
-        return blogRepository.save(blog);
+        else {
+             throw new BlogNotFoundException(blog.getBlogContent());
+        }
     }
 }
 
